@@ -8,20 +8,20 @@ canvas.height = window.innerHeight;
 var context = canvas.getContext('2d');
 
 // Rectangle drawing
-context.fillStyle = "rgba(255, 0, 0, 0.5)";
-context.fillRect(100, 100, 100, 100);
-context.fillStyle = "rgba(0, 0, 255, 0.5)";
-context.fillRect(200, 200, 100, 100);
-context.fillStyle = "rgba(0, 255, 0, 0.5)";
-context.fillRect(300, 300, 100, 100);
+// context.fillStyle = "rgba(255, 0, 0, 0.5)";
+// context.fillRect(100, 100, 100, 100);
+// context.fillStyle = "rgba(0, 0, 255, 0.5)";
+// context.fillRect(200, 200, 100, 100);
+// context.fillStyle = "rgba(0, 255, 0, 0.5)";
+// context.fillRect(300, 300, 100, 100);
 
 // Line drawing
-context.beginPath();
-context.moveTo(50, 300);
-context.lineTo(300, 100);
-context.lineTo(400, 300);
-context.strokeStyle = "#fa34a3";
-context.stroke();
+// context.beginPath();
+// context.moveTo(50, 300);
+// context.lineTo(300, 100);
+// context.lineTo(400, 300);
+// context.strokeStyle = "#fa34a3";
+// context.stroke();
 
 // Arc / Circle drawing
 // context.beginPath();
@@ -29,12 +29,40 @@ context.stroke();
 // context.strokeStyle = 'blue';
 // context.stroke();
 
-for (var i = 0; i < 10; i++) {
-    var x = Math.random() * window.innerWidth;
-    var y = Math.random() * window.innerHeight;
+// for (var i = 0; i < 10; i++) {
+//     var x = Math.random() * window.innerWidth;
+//     var y = Math.random() * window.innerHeight;
+
+//     context.beginPath();
+//     context.arc(x, y, 30, 0, Math.PI * 2, false);
+//     context.strokeStyle = 'blue';
+//     context.stroke();
+// }
+
+// Circular motion animation
+var x = Math.random() * innerWidth;
+var y = Math.random() * innerHeight;
+var dx = (Math.random() - 0.5) * 8;
+var dy = (Math.random() - 0.5) * 8;
+var radius = 30;
+
+function animate() {
+    requestAnimationFrame(animate);
+    context.clearRect(0, 0, innerWidth, innerHeight);
 
     context.beginPath();
-    context.arc(x, y, 30, 0, Math.PI * 2, false);
+    context.arc(x, y, radius, 0, Math.PI * 2, false);
     context.strokeStyle = 'blue';
     context.stroke();
-}
+
+    if (x + radius > innerWidth || x - radius < 0) {
+        dx = -dx;
+    }
+    if (y + radius > innerHeight || y - radius < 0) {
+        dy = -dy;
+    }
+    x += dx;
+    y += dy;
+};
+
+animate();
