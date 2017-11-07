@@ -4,12 +4,28 @@ var canvas = document.querySelector('canvas');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-var pointsArray = [];
+// =====================================================================================================================
+// CLASS DEFINITION
+// =====================================================================================================================
 
+// Drawing active flag
+var draw_active = false;
+
+// Drawing continue flag
+var draw_continues = false;
+
+// Array storing made lines
+var lines = []
+
+// Flag indicating whether the drawing mode is active
+
+// Varriable holding current position of mouse
 var mouse = {
     x: undefined,
-    y:undefined
+    y: undefined
 }
+
+// Class point
 
 class Point {
     constructor(x, y) {
@@ -18,65 +34,118 @@ class Point {
     }
 }
 
+// Class line
+
+class Line {
+    constructor() {
+        this.points = [];
+    }
+
+    addPoint(x, y) {
+        var point = new Point(x, y);
+        this.points.push(point);
+    }
+
+    callOf() {
+        this.points = [];
+    }
+
+    draw(ctx) {
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x, this.points[0].y);
+        ctx.lineTo(this.points[1].x, this.points[1].y);
+        ctx.stroke();
+    }
+
+    drawActive(ctx, mouse) {
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x, this.points[0].y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.stroke();
+    }
+}
+
+// Function that draw stage
+function drawStage(context, mouse) {
+
+    // Clearing canvas
+    context.clearRect(0, 0, innerWidth, innerHeight);
+
+    // Drawing active line
+    if(draw_active) {
+        current_line.drawActive(context, mouse);
+    }
+    // Drawing all previous lines
+    for(var i = 0; i < lines.length; i++) {
+        lines[i].draw(context);
+    }
+}
+
+// =====================================================================================================================
+// DRAWING
+// =====================================================================================================================
+
+// Line object that is currently edited
+var current_line = new Line();
+
+// Allows to create geometric objects on 2d canvas
+var context = canvas.getContext('2d');
+
+// =====================================================================================================================
+// EVENTS
+// =====================================================================================================================
+
+// Event launching functions after mouse click
+
+window.addEventListener('click', function(event) {
+    
+    current_line.addPoint(mouse.x, mouse.y);
+
+    if(!draw_active) {
+        draw_active = true;
+    } 
+    
+    else {
+        lines.push(current_line);
+        current_line = new Line();
+        draw_active = false;
+    }
+});
+
+// Event launching functions after mouse move
+
+window.addEventListener('mousemove', function(event) {
+
+    // Updated values in mouse variable
+    mouse.x = event.x;
+    mouse.y = event.y;
+
+    // Drawing stage content
+    drawStage(context, mouse);
+});
 
 
+// Event launching functions after kay press
 
-// // allows to create geometric objects on 2d canvas
-// var context = canvas.getContext('2d');
+window.addEventListener('keyup', function(event) {
+    event.preventDefault();
+    if(event.keyCode === 13) {
+        console.log("ENTER");
+    }
+    else if(event.keyCode === 27) {
+        current_line.callOf();
+        draw_active = false;
 
-// var pointsArray = [];
+        // Drawing stage content
+        drawStage(context, mouse);
+    }
+});
 
-// window.addEventListener('click', 
-//     function(event) {
-//         var point =[event.x, event.y];
-//         pointsArray.push(point);
-//         console.log(pointsArray);
-// });
+// Event setting the size of canvas to match size of browser
 
-// var mouse = {
-//     x: undefined,
-//     y:undefined
-// }
+window.addEventListener('resize', function() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
 
-// window.addEventListener('mousemove', 
-//     function(event) {
-//         mouse.x = event.x;
-//         mouse.y = event.y;
-//         drawLine(pointsArray);
-// });
-
-// window.addEventListener('resize', 
-//     function() {
-//         // setting the size of canvas to match size of browser
-//         canvas.width = window.innerWidth;
-//         canvas.height = window.innerHeight;
-// })
-
-// function drawLine(pointsArray) {
-//     if(pointsArray.length == 0) {
-//         return
-//     } else {
-//         context.beginPath();
-//         context.moveTo(pointsArray[0].x, pointsArray[0].y);
-//         for(var i = 1; i < pointsArray.length; i++) {
-//             context.lineTo(pointsArray[i].x, pointsArray[i].y);
-//         }
-//         context.stroke();
-//     }
-// }
-
-// var pointsArray1 = [
-//     [10, 20],
-//     [10, 50]
-// ];
-
-// context.beginPath();
-// context.moveTo(pointsArray1[0].x, pointsArray1[0].y);
-// context.lineTo(pointsArray1[1].x, pointsArray1[1].y)
-// context.stroke();
-
-// context.beginPath();
-// context.moveTo(50, 300);
-// context.lineTo(300, 100);
-// context.lineTo(400, 300);
-// context.stroke();
+// =====================================================================================================================
