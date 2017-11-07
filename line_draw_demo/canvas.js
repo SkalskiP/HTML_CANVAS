@@ -1,3 +1,4 @@
+
 var canvas = document.querySelector('canvas');
 
 // setting the size of canvas to match size of browser
@@ -15,7 +16,10 @@ var draw_active = false;
 var draw_continues = false;
 
 // Array storing made lines
-var lines = []
+var lines = [];
+
+// Array storing made rectangles
+var rectangles = [];
 
 // Flag indicating whether the drawing mode is active
 
@@ -108,7 +112,12 @@ window.addEventListener('click', function(event) {
     else {
         lines.push(current_line);
         current_line = new Line();
-        draw_active = false;
+
+        if (draw_continues) {
+            current_line.addPoint(mouse.x, mouse.y);
+        } else {
+            draw_active = false;
+        }
     }
 });
 
@@ -138,6 +147,14 @@ window.addEventListener('keyup', function(event) {
 
         // Drawing stage content
         drawStage(context, mouse);
+    }
+    else if(event.keyCode === 49) {
+        // Switching to continues mode
+        if (draw_continues) {
+            draw_continues = false;
+        } else {
+            draw_continues = true;
+        }
     }
 });
 
